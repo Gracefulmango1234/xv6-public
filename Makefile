@@ -1,3 +1,10 @@
+USERNAME=graceful
+PASSWORD=mango1234
+# CFLAGS += -DUSERNAME=\"$(USERNAME)\" -DPASSWORD=\"$(PASSWORD)\"
+# CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -DUSERNAME=\"graceful\" -DPASSWORD=\"mango1234\"
+
+
+#Not to be tampered below except one modification in CFLAGS
 OBJS = \
 	bio.o\
 	console.o\
@@ -77,6 +84,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
+CFLAGS += -DUSERNAME=\"$(USERNAME)\" -DPASSWORD=\"$(PASSWORD)\"   #modified
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 # FreeBSD ld wants ``elf_i386_fbsd''

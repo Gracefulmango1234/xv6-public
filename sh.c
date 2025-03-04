@@ -3,7 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
-
+#include "stat.h" //suggested by grok
 // Parsed command representation
 #define EXEC  1
 #define REDIR 2
@@ -12,6 +12,54 @@
 #define BACK  5
 
 #define MAXARGS 10
+
+#define MAX_ATTEMPTS 3
+
+// #ifndef USERNAME
+// #define USERNAME "defaultuser"
+// #endif
+
+// #ifndef PASSWORD
+// #define PASSWORD "defaultpass"
+// #endif
+
+int login() {
+    char uname[20], pass[20];
+    int attempts = 0;
+
+    while (attempts < MAX_ATTEMPTS) {
+        printf(1, "Enter Username: ");
+        gets(uname, sizeof(uname));
+        uname[strlen(uname) - 1] = 0;  // Remove newline character
+
+        if (strcmp(uname, USERNAME) != 0) {
+            printf(1, "Invalid Username. Try again.\n");
+            attempts++;
+            continue;
+        }
+
+        printf(1, "Enter Password: ");
+        gets(pass, sizeof(pass));
+        pass[strlen(pass) - 1] = 0;  // Remove newline character
+
+        if (strcmp(pass, PASSWORD) == 0) {
+            printf(1, "Login successful\n");
+            return 1;
+        } else {
+            printf(1, "Incorrect Password. Try again.\n");
+            attempts++;
+        }
+        if (attempts == MAX_ATTEMPTS){
+          exit();
+        }
+    }
+
+    printf(1, "Too many failed attempts. Access denied.\n");
+    return 0;
+    exit();
+}
+
+
 
 struct cmd {
   int type;
@@ -142,8 +190,9 @@ getcmd(char *buf, int nbuf)
 }
 
 int
-main(void)
+main(void)  //int argc, char *argv[]
 {
+  
   static char buf[100];
   int fd;
 
@@ -154,7 +203,10 @@ main(void)
       break;
     }
   }
-
+  int status = login();
+  if (status==0){
+    exit();
+  }
   // Read and run input commands.
   while(getcmd(buf, sizeof(buf)) >= 0){
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
